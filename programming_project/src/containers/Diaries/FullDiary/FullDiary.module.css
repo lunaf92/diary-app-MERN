@@ -1,0 +1,84 @@
+.FullDiary {
+    width: 80%;
+    margin: 20px auto;
+    border: 1px solid #eee;
+    box-shadow: 0 2px 3px #ccc;
+    text-align: center;
+}
+
+.Edit {}
+
+.Edit label {
+    display: block;
+    color: grey;
+}
+
+.Edit button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    outline: none;
+    color: #fa923f;
+}
+
+.Edit button:hover,
+.Edit button:active {
+    color: #521751;
+}
+
+.Edit button.Delete {
+    color: red;
+}
+
+.Edit button.Delete:hover,
+.Edit button.Delete:active {
+    color: darkred;
+}
+
+.Edit button.EditEntry {
+    color: lightskyblue;
+}
+
+.Edit button.EditEntry:hover,
+.Edit button.EditEntry:active {
+    color: blue;
+}
+
+.ChangePage input {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    outline: none;
+    color: #fa923f;
+}
+
+.ChangePage input.Back {
+    text-align: left
+}
+
+.ChangePage input.Forward {
+    text-align: right
+}
+
+i {
+    border: solid black;
+    border-width: 0 10px 10px 0;
+    display: inline-block;
+    padding: 10px;
+}
+
+.ArrowRight {
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+    margin: 25px 40px
+}
+
+.ArrowLeft {
+    transform: rotate(135deg);
+    -webkit-transform: rotate(135deg);
+    margin: 25px 40px
+}
+
+i:hover{
+    cursor: pointer;
+}

@@ -1,0 +1,51 @@
+.Diary {
+    width: 250px;
+    padding: 16px;
+    text-align: center;
+    border: 1px solid #eee;
+    box-shadow: 0 2px 3px #ccc;
+    margin: 10px;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.Diary:hover,
+.Diary:active {
+    background-color: #C0DDF5;
+}
+
+.Author {
+    margin: 16px 0;
+    color: #ccc;
+}
+
+.Instructions {
+
+}
+
+.Instructions label {
+    display: block;
+    color: grey;
+}
+
+.Instructions button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    outline: none;
+    color: #fa923f;
+}
+
+.Instructions button:hover,
+.Instructions button:active {
+    color: #521751;
+}
+
+.Instructions button.Delete {
+    color: red;
+}
+
+.Instructions button.Delete:hover,
+.Instructions button.Delete:active {
+    color: darkred;
+}
