@@ -1,0 +1,30 @@
+.Instructions {
+
+}
+
+.Instructions label {
+    display: block;
+    color: grey;
+}
+
+.Instructions button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    outline: none;
+    color: #fa923f;
+}
+
+.Instructions button:hover,
+.Instructions button:active {
+    color: #521751;
+}
+
+.Instructions button.Delete {
+    color: red;
+}
+
+.Instructions button.Delete:hover,
+.Instructions button.Delete:active {
+    color: darkred;
+}

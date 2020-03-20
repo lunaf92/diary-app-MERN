@@ -6,6 +6,7 @@ import Spinner from '../../../UI/Spinner/Spinner'
 class NewDiary extends Component{
 
     state = {
+        id: null,
         title: '',
         description: '',
         author: '',
@@ -13,19 +14,33 @@ class NewDiary extends Component{
     }
 
     componentDidMount(){
-        console.log(this.props);
+        this.checkId()
+    }
+
+    checkId(){
+        let newId = null;
+        axios.get('https://programming-project-f81c1.firebaseio.com/diaries.json')
+            .then(response=>{                
+                if(response.data){
+                    newId = (Object.keys(response.data).length)
+                }else{
+                    newId = 0
+                }
+                this.setState({id:newId})
+            });
     }
 
     postDataHandler = () =>{
         this.setState({posting:true})
 
         let post = {
+            id: this.state.id,
             title: this.state.title,
             description: this.state.description,
             author: this.state.author
         }
 
-        axios.post('http://jsonplaceholder.typicode.com/posts', post)
+        axios.post('https://programming-project-f81c1.firebaseio.com/diaries.json', post)
                 .then(response=>{
                     this.setState({posting:false})
                     alert('diary saved!')
@@ -34,7 +49,6 @@ class NewDiary extends Component{
     }
 
     render(){
-        console.log(this.state)
 
         let NewDiary = <Spinner/>
         if(!this.state.posting){
