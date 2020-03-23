@@ -50,6 +50,11 @@ class EditDailyDiary extends Component{
             })
     }
 
+    setTextContent = (text) => {
+        text = text.replace(/\n\r?/g, '\n');
+        this.setState({content: text})
+    }
+
     render(){
 
         let diary = null;
@@ -67,7 +72,7 @@ class EditDailyDiary extends Component{
                         <textarea
                             rows="4"
                             value={this.state.content}
-                            onChange={event => this.setState({ content: event.target.value })}
+                            onChange={event => this.setTextContent(event.target.value)}
                         />
                         <p>{this.state.date}</p>
                         <button onClick={this.updateDataHandler}>Edit entry</button>

@@ -152,8 +152,6 @@ class FullDiary extends Component {
               //this is the first time user write in diary, set noEntries to true
               this.setState({noEntries:true})
             }
-
-            
           });
       }
     }
@@ -211,7 +209,7 @@ class FullDiary extends Component {
             <h1>{this.state.loadedDiary.title}</h1>
             <DailyDiary
               date={this.state.loadedDiary.pages[this.state.currentKey].date}
-              body={this.state.loadedDiary.pages[this.state.currentKey].body}
+              body={this.state.loadedDiary.pages[this.state.currentKey].body.replace(/\n/ig, '\n')}
               edit={() => this.editEntryHandler(this.state.currentKey)}
             />
             <div className={classes.ChangePage}>
