@@ -66,7 +66,7 @@ class Diaries extends Component{
 
                 return(
                     //<Link key={index} to={this.state.deleting ? this.props.match.url : this.props.match.url+'/' + diaryKey}>
-                        <div className={classes.SingleDiary}>
+                        <div key={index} className={classes.SingleDiary}>
                             <Diary
                                 title={singleDiary.title}
                                 author={singleDiary.author}

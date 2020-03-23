@@ -37,8 +37,8 @@ class FullDiary extends Component {
     axios.interceptors.response.eject(this.resInterceptor);
   }
 
-  editEntryHandler = () => {
-    alert("Edit diary entry page......");
+  editEntryHandler = (page) => {
+    this.props.history.push(this.props.match.url + '/pages/' + page)
   };
 
   componentDidMount() {
@@ -50,27 +50,26 @@ class FullDiary extends Component {
     const previousIndex = this.state.currentIndex;
     const newIndex = previousIndex - 1;
     this.setState({ currentIndex: newIndex });
-    const dayBefore = this.getDayBeforeDate(this.state.today);
     const currentPages = Object.entries(this.state.loadedDiary.pages);
-    currentPages.forEach(page=>{
-      if(page[1].date === dayBefore){
-        this.setState({currentKey: page[0], currentDay: dayBefore})
+    currentPages.map((page, index)=>{
+      if(this.state.currentIndex - 1 === index){
+        return this.setState({currentKey: page[0], currentDay: page[1].date})
       }
-    })
+  })
   };
 
   forwardHandler = () => {
+    console.log(this.state.loadedDiary.pages)
     const previousIndex = this.state.currentIndex;
     const newIndex = previousIndex + 1;
     this.setState({ currentIndex: newIndex });
-    const dayAfter = this.getDayAfterDate(this.state.currentDay)
     const currentPages = Object.entries(this.state.loadedDiary.pages);
-    currentPages.forEach(page=>{
-      if(page[1].date === dayAfter){
-        this.setState({currentKey: page[0], currentDay: dayAfter})
+    currentPages.map((page, index)=>{
+      if(this.state.currentIndex + 1 === index){
+        return this.setState({currentKey: page[0], currentDay: page[1].date})
       }
-    })
-  };
+  })
+}
 
   getTodayDate(){
     let today = [];
@@ -80,41 +79,17 @@ class FullDiary extends Component {
     return today = today.join("-");
   }
 
-  getDayBeforeDate(day){
-
-    let getDayBefore = new Date(day)
-    getDayBefore.setDate(getDayBefore.getDate() -1)
-    
-    let dayBefore = [];
-    dayBefore.push(new Date(getDayBefore).getFullYear());
-    dayBefore.push(new Date(getDayBefore).getMonth() + 1);
-    dayBefore.push(new Date(getDayBefore).getDate());
-    return dayBefore = dayBefore.join('-')
-
-  }
-
-  getDayAfterDate(day){
-    let getDayAfter = new Date(day)
-    getDayAfter.setDate(getDayAfter.getDate() + 1)
-    
-    let dayAfter = [];
-    dayAfter.push(new Date(getDayAfter).getFullYear());
-    dayAfter.push(new Date(getDayAfter).getMonth() + 1);
-    dayAfter.push(new Date(getDayAfter).getDate());
-    return dayAfter = dayAfter.join('-')
-  }
-
   loadData = () => {
-    if (this.props.match.params.id) {
+    if (this.props.match.params.diary) {
       if (
         !this.state.loadedDiary ||
         (this.state.loadedDiary &&
-          this.state.loadedDiary.id !== +this.props.match.params.id)
+          this.state.loadedDiary.id !== +this.props.match.params.diary)
       ) {
         axios
           .get(
             "https://programming-project-f81c1.firebaseio.com/diaries/" +
-              this.props.match.params.id +
+              this.props.match.params.diary +
               ".json"
           )
           .then(response => {
@@ -187,10 +162,12 @@ class FullDiary extends Component {
   render() {
     let moveForward = null;
     let moveBackward = null;
-
+    let today = this.getTodayDate()
     let diary = null;
+    // console.log('state')
+    // console.log(this.state)
 
-    if (this.props.match.params.id) {
+    if (this.props.match.params.diary) {
       diary = <Spinner />;
     }
 
@@ -198,7 +175,7 @@ class FullDiary extends Component {
       return (
         <Redirect
           from={this.props.match.url}
-          to={this.props.match.url + "/" + this.state.today}
+          to={this.props.match.url + "/" + today}
         />
         // <p>new post?</p>
       );
@@ -235,7 +212,7 @@ class FullDiary extends Component {
             <DailyDiary
               date={this.state.loadedDiary.pages[this.state.currentKey].date}
               body={this.state.loadedDiary.pages[this.state.currentKey].body}
-              edit={this.editEntryHandler}
+              edit={() => this.editEntryHandler(this.state.currentKey)}
             />
             <div className={classes.ChangePage}>
               {/* <input type="button" className={classes.Back} value="back" />

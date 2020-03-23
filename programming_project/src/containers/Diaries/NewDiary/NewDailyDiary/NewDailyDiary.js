@@ -32,11 +32,11 @@ class NewDailyDiary extends Component {
 
   loadData = () => {
       
-    if (this.props.match.params.id) {
+    if (this.props.match.params.diary) {
       if (
         !this.state.loadedDiary ||
         (this.state.loadedDiary &&
-          this.state.loadedDiary.id !== +this.props.match.params.id)
+          this.state.loadedDiary.id !== +this.props.match.params.diary)
       ) {
         axios
           .get(
@@ -48,7 +48,7 @@ class NewDailyDiary extends Component {
               let diaryEntry = null
               entries.map((sDiary)=>{
                   
-                 if(this.props.match.params.id === ''+sDiary[0]){
+                 if(this.props.match.params.diary === ''+sDiary[0]){
                     diaryEntry = {
                         loadedDiary: sDiary[1],
                         date: today,
@@ -94,7 +94,7 @@ class NewDailyDiary extends Component {
 
   render() {
     let diary = null;
-    if (this.props.match.params.id) {
+    if (this.props.match.params.diary) {
       diary = <Spinner />;
     }
     if (this.state.loadedDiary && this.state.loading===false) {
