@@ -16,6 +16,8 @@ class NewDailyDiary extends Component {
 
   componentDidMount() {
     this.loadData();
+    console.log(this.props);
+    
   }
 
   componentDidUpdate() {

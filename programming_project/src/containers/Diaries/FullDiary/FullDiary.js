@@ -55,6 +55,9 @@ class FullDiary extends Component {
       if(this.state.currentIndex - 1 === index){
         return this.setState({currentKey: page[0], currentDay: page[1].date})
       }
+      else{
+        return null
+      }
   })
   };
 
@@ -67,6 +70,9 @@ class FullDiary extends Component {
     currentPages.map((page, index)=>{
       if(this.state.currentIndex + 1 === index){
         return this.setState({currentKey: page[0], currentDay: page[1].date})
+      }
+      else{
+        return null
       }
   })
 }
@@ -187,7 +193,6 @@ class FullDiary extends Component {
             from={this.props.match.url}
             to={this.props.match.url + "/" + this.state.today}
           />
-          // <p>new post?</p>
         );
       } else {
         if (
