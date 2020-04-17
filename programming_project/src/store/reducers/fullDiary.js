@@ -21,7 +21,7 @@ const initialState = {
 const reducer = (state = initialState, action) =>{
     switch (action.type) {
         case actions.FETCH_DIARY_INIT:
-            return updateObject(state, {loading: true, error: null, currentBody: '', previous: true});
+            return updateObject(state, {loading: true, error: null, currentBody: '', previous: true, todayHasAnEntry: false});
         case actions.FETCH_DIARY_SUCCESS:
             return updateObject(state, {loading: false, title: action.title, pages: action.pages, today:action.today, currentDate: action.today, currentDiary: action.currentDiary});
         case actions.FETCH_DIARY_FAIL:

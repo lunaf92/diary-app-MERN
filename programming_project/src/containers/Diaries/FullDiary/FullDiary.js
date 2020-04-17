@@ -93,32 +93,34 @@ class FullDiary extends Component {
     }else if(this.props.editing){
         body = <textarea
               rows="4"
-              value={this.props.body}
+              value={this.props.body.replace(/\n/ig, '\n')}
               onChange={this.props.onBodyChanging}
             />
         buttonName = 'submit edit'
     }else{
-      body = this.props.body;
+      body = this.props.body.replace(/\n/ig, '\n');
       buttonName = 'Edit';
     }
     // check if title is loaded, this will exist even if diary is empty, 
     // which means that the diary has indeed loaded
     if(this.props.currentTitle){
-      if((this.props.currentDate !== this.props.today) && this.props.next){
-        nextPage = <i className={classes.ArrowRight} onClick={this.onNextHandler} />
+      if(this.props.pages){
+        if((this.props.currentDate !== this.props.today) && this.props.next){
+          nextPage = <i className={classes.ArrowRight} onClick={this.onNextHandler} />
+        }
+        if(Object.keys(this.props.pages).length >1 && this.props.previous){
+          prevPage = <i className={classes.ArrowLeft} onClick={this.onBackHandler} />
+        }
       }
-      if(Object.keys(this.props.pages).length >1 && this.props.previous){
-        prevPage = <i className={classes.ArrowLeft} onClick={this.onBackHandler} />
-      }
+      
       diary = 
       <div className={classes.FullDiary}>
         <h1>{this.props.currentTitle}</h1>
         <DailyDiarySkeleton
                             date={this.props.currentDate}
                             buttonname={buttonName}
-                            buttonaction={buttonName === 'submit' ? this.postDataHandler : buttonName === 'Edit' ? this.onEditEntryHandler : this.submitEditHandler}>
-            {body}  
-        </DailyDiarySkeleton>
+                            buttonaction={buttonName === 'submit' ? this.postDataHandler : buttonName === 'Edit' ? this.onEditEntryHandler : this.submitEditHandler}
+                            body={body} />
         <div className={classes.ChangePage}>
           {prevPage}
           {nextPage}

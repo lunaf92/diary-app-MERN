@@ -42,7 +42,7 @@ export const fetchDiary = (id) =>{
                     return false;
                 }
                 dispatch(fetchDiarySuccess(response.data, id));
-                dispatch(checkIfTodayHasAnEntry(response.data))
+                dispatch(checkIfTodayHasAnEntry(response.data));
             })
             .catch(error => {
                 dispatch(fetchDiaryFail(error))

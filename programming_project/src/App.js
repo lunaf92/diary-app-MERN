@@ -6,8 +6,8 @@ import FullDiary from './containers/Diaries/FullDiary/FullDiary'
 import { Route, Switch, Redirect } from 'react-router-dom';
 import NotFound from './components/NotFound/NotFound'
 import NewDiary from './containers/Diaries/NewDiary/NewDiary'
-import NewDailyDiary from './containers/Diaries/NewDiary/NewDailyDiary/NewDailyDiary';
-import EditDailyDiary from './containers/Diaries/EditDailyDiary/EditDailyDiary';
+// import NewDailyDiary from './containers/Diaries/NewDiary/NewDailyDiary/NewDailyDiary';
+// import EditDailyDiary from './containers/Diaries/EditDailyDiary/EditDailyDiary';
  
 class App extends Component{
     render(){
@@ -17,8 +17,8 @@ class App extends Component{
               <Switch>
                   <Route path="/new-diary" exact component={NewDiary} />
                   <Route path="/diaries/:diary" exact component={FullDiary} />
-                  <Route path="/diaries/:diary/:today" exact component={NewDailyDiary}/>
-                  <Route path="/diaries/:diary/pages/:page" exact component={EditDailyDiary}/>
+                  {/* <Route path="/diaries/:diary/:today" exact component={NewDailyDiary}/> */}
+                  {/* <Route path="/diaries/:diary/pages/:page" exact component={EditDailyDiary}/> */}
                   <Route path="/diaries" component={Diaries} />
                   <Redirect from='/' to='/diaries'/>
                   <Route component={NotFound}/>
