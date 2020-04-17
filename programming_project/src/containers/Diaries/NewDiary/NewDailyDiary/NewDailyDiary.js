@@ -17,7 +17,6 @@ class NewDailyDiary extends Component {
   componentDidMount() {
     this.loadData();
     console.log(this.props);
-    
   }
 
   componentDidUpdate() {
@@ -65,6 +64,7 @@ class NewDailyDiary extends Component {
                 date: diaryEntry.date,
                 diaryKey: diaryEntry.diaryKey
             });
+            console.log('state', this.state)
             
           });
       }

@@ -28,3 +28,42 @@
 .Instructions button.EditEntry:active {
     color: blue;
 }
+
+.TurningPage input {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    outline: none;
+    color: #fa923f;
+}
+
+.TurningPage input.Back {
+    text-align: left
+}
+
+.TurningPage input.Forward {
+    text-align: right
+}
+
+i {
+    border: solid black;
+    border-width: 0 10px 10px 0;
+    display: inline-block;
+    padding: 10px;
+}
+
+.ArrowRight {
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+    margin: 25px 40px
+}
+
+.ArrowLeft {
+    transform: rotate(135deg);
+    -webkit-transform: rotate(135deg);
+    margin: 25px 40px
+}
+
+i:hover{
+    cursor: pointer;
+}

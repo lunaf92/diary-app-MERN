@@ -1,94 +1,82 @@
-import React, {Component} from 'react' 
-import Diary from '../../../components/Diary/Diary'
-import classes from './Diaries.module.css'
-import axios from 'axios'
-import {Link} from 'react-router-dom'
-import Spinner from '../../../UI/Spinner/Spinner'
-import Delete from '../../../components/Delete/Delete'
+import React, {Component} from 'react'; 
+import { connect } from 'react-redux';
+
+import Diary from '../../../components/Diary/Diary';
+import classes from './Diaries.module.css';
+import Spinner from '../../../UI/Spinner/Spinner';
+import Delete from '../../../components/Delete/Delete';
+import * as actions from '../../../store/actions/index';
  
 class Diaries extends Component{
 
-    state = {
-        diaries:null,
-        currentView: 0,
-        error: false,
-        deleting: false
-    }
-
     componentDidMount(){
-        
-        axios.get('https://programming-project-f81c1.firebaseio.com/diaries.json')
-            .then(response=>{
-                
-                let newData = Object.entries(response.data);
-                let updatedDiaries = []
-                newData.map((diary)=>{
-                    
-                    return updatedDiaries.push(diary)
-                })
-
-                this.setState({diaries:updatedDiaries})
-                
-            })
-            .catch(error=> {
-                console.log(error);
-                this.setState({error:true})
-            })
+        this.props.onFetchDiaries();
     }
 
     selectorHandler = (id) =>{
-            this.props.history.push(this.props.match.url + '/' + id)
+        this.props.onSelectDiary(id)
+        this.props.history.push(this.props.match.url + '/' + id);
     }
 
     deleteDiaryHandler = (id) =>{
-        if(window.confirm("delete?" + id)){
-            axios.delete('https://programming-project-f81c1.firebaseio.com/diaries/'+ id + '.json')
-                .then(response=>{
-                    console.log(response)
-                    alert('Diary successfully deleted')
-                    this.props.history.push('/')
-                })
+        if(window.confirm("Are you sure you want to delete the full diary? you can't come back after this action")){
+            this.props.onDeleteDiary(id);
         }
     }
 
     render(){
-        let diaries = <p>OOOPS... something went wrong!!</p>
-        if(!this.state.diaries){
-            diaries = <p>looks like you're the first one! start a diary now!</p>
-        }
-        if(this.state.deleting){
+        let diaries = null;
+        if(this.props.loading){
             diaries = <Spinner/>
         }
-        if(!this.state.error && this.state.diaries){
-            diaries = this.state.diaries.map((diary, index)=>{
-                let diaryKey = diary[0]
-                let singleDiary = diary[1]
-
+        if(!this.props.diaries){
+            diaries = <p>looks like you're the first one! start a diary now!</p>
+        }
+        if(this.props.error){
+            diaries = <p>something went wrong, please try again later</p>
+        }
+        if(this.props.diaries){
+            diaries = this.props.diaries.map((diary, index)=>{
+                let diaryKey = diary[0];
+                let singleDiary = diary[1];
                 return(
-                    //<Link key={index} to={this.state.deleting ? this.props.match.url : this.props.match.url+'/' + diaryKey}>
-                        <div key={index} className={classes.SingleDiary}>
-                            <Diary
-                                title={singleDiary.title}
-                                author={singleDiary.author}
-                                description={singleDiary.description}
-                                clicked={()=>this.selectorHandler(diaryKey, true)}
+                    <div key={index} className={classes.SingleDiary}>
+                        <Diary
+                            title={singleDiary.title}
+                            author={singleDiary.author}
+                            description={singleDiary.description}
+                            clicked={()=>this.selectorHandler(diaryKey, true)}
+                        />
+                        <Delete 
+                            delete={()=>this.deleteDiaryHandler(diaryKey, false)}
                             />
-                            <Delete 
-                                delete={()=>this.deleteDiaryHandler(diaryKey, false)}
-                                />
-                        </div>
-                    //</Link>
+                    </div>
                 );
             })
         }
 
         return(
             <div className={classes.Diaries}>
-                {/* {this.state.currentPost ? null : diaries} */}
                 {diaries}
             </div>
         )
     } 
 }
+
+const mapDispatchToProps = dispatch =>{
+    return{
+        onFetchDiaries: () => dispatch(actions.fetchDiaries()),
+        onDeleteDiary: (id) => dispatch(actions.deleteDiary(id)),
+        onSelectDiary: (id) => dispatch(actions.storeEntry(id))
+    }
+};
+
+const mapStateToProps = state =>{
+    return {
+        diaries: state.diaries.diaries,
+        error: state.diaries.error,
+        loading: state.diaries.loading
+    }
+};
  
-export default Diaries
+export default connect(mapStateToProps, mapDispatchToProps)(Diaries);

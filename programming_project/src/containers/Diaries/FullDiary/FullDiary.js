@@ -1,235 +1,166 @@
 import React, { Component } from "react";
+import { connect } from 'react-redux'
+
 import classes from "./FullDiary.module.css";
-import axios from "axios";
-import { Redirect } from "react-router-dom";
 import Spinner from "../../../UI/Spinner/Spinner";
-import DailyDiary from "../../../components/DailyDiary/DailyDiary";
+import DailyDiarySkeleton from "../../../components/DailyDiary/DailyDiarySkeleton"
+import * as actions from '../../../store/actions/index'
+import { getTodayDate } from "../../../store/actions/fullDiary";
+import { Redirect } from "react-router-dom";
+
 
 class FullDiary extends Component {
-  state = {
-    loadedDiary: null,
-    currentBody: "",
-    currentIndex: null,
-    today: null,
-    isTodayFilled: true,
-    error: null,
-    noEntries: false,
-    currentKey: null,
-    currentDay: null
-  };
-
-  constructor(props) {
-    super(props);
-    this.reqInterceptor = axios.interceptors.request.use(req => {
-      this.setState({ error: null });
-      return req;
-    });
-    this.resInterceptor = axios.interceptors.response.use(
-      res => res,
-      error => {
-        this.setState({ error: error });
-      }
-    );
-  }
-
-  componentWillUnmount() {
-    axios.interceptors.request.eject(this.reqInterceptor);
-    axios.interceptors.response.eject(this.resInterceptor);
-  }
 
   editEntryHandler = (page) => {
     this.props.history.push(this.props.match.url + '/pages/' + page)
   };
 
   componentDidMount() {
-    
-    this.loadData();
+    let selected = ''
+    if(this.props.selected !== ''){
+      selected = this.props.selected;
+    }else{
+      selected = this.props.match.url.split('/')[2]
+    }
+    this.props.onFetchDiary(selected);
   }
 
-  backHandler = () => {
-    const previousIndex = this.state.currentIndex;
-    const newIndex = previousIndex - 1;
-    this.setState({ currentIndex: newIndex });
-    const currentPages = Object.entries(this.state.loadedDiary.pages);
-    currentPages.map((page, index)=>{
-      if(this.state.currentIndex - 1 === index){
-        return this.setState({currentKey: page[0], currentDay: page[1].date})
-      }
-      else{
-        return null
-      }
-  })
-  };
-
-  forwardHandler = () => {
-    console.log(this.state.loadedDiary.pages)
-    const previousIndex = this.state.currentIndex;
-    const newIndex = previousIndex + 1;
-    this.setState({ currentIndex: newIndex });
-    const currentPages = Object.entries(this.state.loadedDiary.pages);
-    currentPages.map((page, index)=>{
-      if(this.state.currentIndex + 1 === index){
-        return this.setState({currentKey: page[0], currentDay: page[1].date})
-      }
-      else{
-        return null
-      }
-  })
-}
-
-  getTodayDate(){
+  getTodayDate = () => {
     let today = [];
     today.push(new Date().getFullYear());
     today.push(new Date().getMonth() + 1);
     today.push(new Date().getDate());
-    return today = today.join("-");
-  }
-
-  loadData = () => {
-    if (this.props.match.params.diary) {
-      if (
-        !this.state.loadedDiary ||
-        (this.state.loadedDiary &&
-          this.state.loadedDiary.id !== +this.props.match.params.diary)
-      ) {
-        axios
-          .get(
-            "https://programming-project-f81c1.firebaseio.com/diaries/" +
-              this.props.match.params.diary +
-              ".json"
-          )
-          .then(response => {
-            
-            
-            const today = this.getTodayDate();
-            if(response.data.pages){
-              this.setState({noEntries:false})
-              //check if there is a page for the current day
-              let newState = {
-                loadedDiary: response.data,
-                currentBody: '',
-                currentIndex: null,
-                today: today,
-                isTodayFilled: false,
-                pageKey: null,
-                currentDay: today
-              }
-
-              Object.entries(response.data.pages).map((page, index)=>{
-                if(page[1].date === today){
-                  
-                  return newState = {
-                    loadedDiary: response.data,
-                    currentIndex: index,
-                    currentBody: response.data.pages[page[0]].body,
-                    today: today,
-                    isTodayFilled: true,
-                    pageKey: page[0],
-                    currentDay: today
-                  }
-                }
-                return newState;
-              })
-              
-              
-              if(newState.isTodayFilled){
-                this.setState({
-                  loadedDiary: newState.loadedDiary,
-                  currentBody: newState.currentBody,
-                  currentIndex: newState.currentIndex,
-                  today: newState.today,
-                  isTodayFilled: newState.isTodayFilled,
-                  currentKey: newState.pageKey,
-                  currentDay: today
-                })
-              }
-              else{
-                this.setState({
-                  loadedDiary: newState.loadedDiary,
-                  currentBody: newState.currentBody,
-                  currentIndex: newState.currentIndex,
-                  today: newState.today,
-                  isTodayFilled: newState.isTodayFilled,
-                  currentKey: newState.pageKey,
-                  currentDay: today
-                })
-              }
-            }else{
-              //this is the first time user write in diary, set noEntries to true
-              this.setState({noEntries:true})
-            }
-          });
-      }
-    }
+    return (today = today.join("-"));
   };
 
+  postDataHandler = () =>{
+    const data = {
+      body: this.props.body,
+      date: getTodayDate()
+    };
+    const diaryEntry = this.props.match.url.split('/')[2];
+    this.props.onDailySubmit(data, diaryEntry);
+  }
+
+  onEditEntryHandler = () =>{
+    console.log('Edit Entry')
+    this.props.onEditEntry()
+  }
+
+  submitEditHandler = () =>{
+    const data = {
+      body: this.props.body,
+      date: this.props.currentDate
+    }
+    const diary = this.props.currentDiary;
+    const page = this.props.currentPage[0][0];
+    this.props.onSubmitEdit(data, diary, page);
+  }
+
+  onNextHandler = () =>{
+    this.props.onNextPage(this.props.pages, this.props.currentDate);
+  }
+
+  onBackHandler = () =>{
+    console.log('onBackHandler')
+    this.props.onPrevPage(this.props.pages, this.props.currentDate)
+  }
+
   render() {
-    let moveForward = null;
-    let moveBackward = null;
-    let today = this.getTodayDate()
-    let diary = null;
-    // console.log('state')
-    // console.log(this.state)
+    //setup of the buttons to browse the pages
+    let nextPage = null;
+    let prevPage = null;
 
-    if (this.props.match.params.diary) {
-      diary = <Spinner />;
+    // redirect if new entry has just been posted
+    if(this.props.posted){
+      this.props.afterSuccess()
+      return(
+        <Redirect to="/" />
+      )
     }
-
-    if(this.state.noEntries){
-      return (
-        <Redirect
-          from={this.props.match.url}
-          to={this.props.match.url + "/" + today}
-        />
-        // <p>new post?</p>
-      );
-    }
-
-    if (this.state.loadedDiary) {
-      
-      if (!this.state.isTodayFilled) {
-        return (
-          <Redirect
-            from={this.props.match.url}
-            to={this.props.match.url + "/" + this.state.today}
+    let diary = <Spinner/>;
+    let body = null;
+    let buttonName = ''
+    // if there is no entry for today, display a textbox to fill the day's entry
+    // else assign the body of today's post
+    if((!this.props.todayHasAnEntry && (this.props.currentDate===this.props.today)) ){
+      body = <textarea
+            rows="4"
+            value={this.props.body}
+            onChange={this.props.onBodyChanging}
           />
-        );
-      } else {
-        if (
-          this.state.today !==
-          this.state.currentDay
-        ) {
-          moveForward = (
-            <i className={classes.ArrowRight} onClick={this.forwardHandler} />
-          );
-        }
-
-        if (this.state.currentIndex !== 0) {
-          moveBackward = (
-            <i className={classes.ArrowLeft} onClick={this.backHandler} />
-          );
-        }
-        diary = (
-          <div className={classes.FullDiary}>
-            <h1>{this.state.loadedDiary.title}</h1>
-            <DailyDiary
-              date={this.state.loadedDiary.pages[this.state.currentKey].date}
-              body={this.state.loadedDiary.pages[this.state.currentKey].body.replace(/\n/ig, '\n')}
-              edit={() => this.editEntryHandler(this.state.currentKey)}
+      buttonName = 'submit'
+    }else if(this.props.editing){
+        body = <textarea
+              rows="4"
+              value={this.props.body}
+              onChange={this.props.onBodyChanging}
             />
-            <div className={classes.ChangePage}>
-              {/* <input type="button" className={classes.Back} value="back" />
-                            <input type="button" className={classes.Forward} value="forward"/> */}
-              {moveBackward}
-              {moveForward}
-            </div>
-          </div>
-        );
+        buttonName = 'submit edit'
+    }else{
+      body = this.props.body;
+      buttonName = 'Edit';
+    }
+    // check if title is loaded, this will exist even if diary is empty, 
+    // which means that the diary has indeed loaded
+    if(this.props.currentTitle){
+      if((this.props.currentDate !== this.props.today) && this.props.next){
+        nextPage = <i className={classes.ArrowRight} onClick={this.onNextHandler} />
       }
+      if(Object.keys(this.props.pages).length >1 && this.props.previous){
+        prevPage = <i className={classes.ArrowLeft} onClick={this.onBackHandler} />
+      }
+      diary = 
+      <div className={classes.FullDiary}>
+        <h1>{this.props.currentTitle}</h1>
+        <DailyDiarySkeleton
+                            date={this.props.currentDate}
+                            buttonname={buttonName}
+                            buttonaction={buttonName === 'submit' ? this.postDataHandler : buttonName === 'Edit' ? this.onEditEntryHandler : this.submitEditHandler}>
+            {body}  
+        </DailyDiarySkeleton>
+        <div className={classes.ChangePage}>
+          {prevPage}
+          {nextPage}
+        </div>
+      </div>
     }
 
     return <div>{diary}</div>;
   }
 }
 
-export default FullDiary;
+const mapDispatchToProps = dispatch =>{
+  return{
+    onFetchDiary: (id) => dispatch(actions.fetchDiary(id)),
+    onTodayCheck: (diary)=>dispatch(actions.checkIfTodayHasAnEntry(diary)),
+    onBodyChanging: (event)=>dispatch(actions.dailyBody(event.target.value)),
+    onDailySubmit: (body, diary)=>dispatch(actions.postDailyDiary(body, diary)),
+    afterSuccess: ()=>dispatch(actions.afterSuccessulPost()),
+    onNextPage: (pages, currentPage)=>dispatch(actions.nextPage(pages, currentPage)),
+    onPrevPage: (pages, currentDate)=>dispatch(actions.prevPage(pages, currentDate)),
+    onSubmitEdit: (data, diary, page)=>dispatch(actions.submitEdit(data, diary, page)),
+    onEditEntry: ()=>dispatch(actions.editEntryInit())
+  }
+}
+
+const mapStateToProps = state =>{
+  return{
+    selected: state.diaries.selected,
+    error: state.fullDiary.error,
+    todayHasAnEntry: state.fullDiary.todayHasAnEntry,
+    currentPage: state.fullDiary.currentPage,
+    currentTitle: state.fullDiary.title,
+    pages: state.fullDiary.pages,
+    body: state.fullDiary.currentBody,
+    posted: state.fullDiary.posted,
+    today: state.fullDiary.today,
+    currentDate: state.fullDiary.currentDate,
+    previous: state.fullDiary.previous,
+    next: state.fullDiary.next,
+    editing: state.fullDiary.editing,
+    currentDiary: state.fullDiary.currentDiary
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(FullDiary);

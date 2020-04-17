@@ -1,0 +1,48 @@
+// action necessary for the home page
+export const FETCH_DIARIES_INIT = 'FETCH_DIARIES_INIT';
+export const FETCH_DIARIES_SUCCESS = 'FETCH_DIARIES_SUCCESS';
+export const FETCH_DIARIES_FAIL = 'FETCH_DIARIES_FAIL';
+export const DELETE_DIARY_INIT = 'DELETE_DIARY_INIT';
+export const DELETE_DIARY_SUCCESS = 'DELETE_DIARY_SUCCESS';
+export const DELETE_DIARY_FAIL = 'DELETE_DIARY_FAIL';
+
+// entering a new diary
+export const NEW_TITLE = 'NEW_TITLE';
+export const NEW_DESCRIPTION = 'NEW_DESCRIPTION';
+export const NEW_AUTHOR = 'NEW_AUTHOR';
+export const SUBMIT_NEW_DIARY_INIT = 'SUBMIT_NEW_DIARY_INIT';
+export const SUBMIT_NEW_DIARY_SUCCESS = 'SUBMIT_NEW_DIARY_SUCCESS';
+export const SUBMIT_NEW_DIARY_FAIL = 'SUBMIT_NEW_DIARY_FAIL';
+export const RESET = 'RESET';
+
+// store a selected diary entry from the main page
+export const STORE_DIARY_ENTRY = 'STORE_DIARY_ENTRY';
+
+// actions for a single diary
+export const FETCH_DIARY_INIT = 'FETCH_DIARY_INIT';
+export const FETCH_DIARY_SUCCESS = 'FETCH_DIARY_SUCCESS';
+export const FETCH_DIARY_FAIL = 'FETCH_DIARY_FAIL';
+export const TODAY_HAS_AN_ENTRY = 'TODAY_HAS_AN_ENTRY';
+export const TODAY_HAS_NO_ENTRY = 'TODAY_HAS_NO_ENTRY';
+export const NEXT_PAGE_SUCCESS = 'NEXT_PAGE_SUCCESS';
+export const NEXT_PAGE_FAIL = 'NEXT_PAGE_FAIL';
+export const GET_DATA_OF_NEXT_PAGE = 'GET_DATA_OF_NEXT_PAGE';
+export const PREVIOUS_PAGE_SUCCESS = 'PREVIOUS_PAGE_SUCCESS';
+export const PREVIOUS_PAGE_FAIL = 'PREVIOUS_PAGE_FAIL';
+export const IS_TODAY_PAGE = 'IS_TODAY_PAGE';
+export const GET_DATA_OF_PREV_PAGE = 'GET_DATA_OF_PREV_PAGE';
+export const NO_PREVIOUS_PAGE = 'NO_PREVIOUS_PAGE';
+export const PREVIOUS_PAGE_PRESENT = 'PREVIOUS_PAGE_PRESENT';
+
+// new page
+export const DAILY_BODY = 'DAILY_BODY';
+export const SUBMIT_NEW_DAY_INIT = 'SUBMIT_NEW_DAY_INIT';
+export const SUBMIT_NEW_DAY_SUCCESS = 'SUBMIT_NEW_DAY_SUCCESS';
+export const SUBMIT_NEW_DAY_FAIL = 'SUBMIT_NEW_DAY_FAIL';
+export const AFTER_SUBMISSION = 'AFTER_SUBMISSION';
+
+// edit page
+export const EDIT_PAGE = 'EDIT_PAGE';
+export const SUBMIT_EDIT_INIT = 'SUBMIT_EDIT_INIT';
+export const SUBMIT_EDIT_SUCCESS = 'SUBMIT_EDIT_SUCCESS';
+export const SUBMIT_EDIT_FAIL = 'SUBMIT_EDIT_FAIL';
