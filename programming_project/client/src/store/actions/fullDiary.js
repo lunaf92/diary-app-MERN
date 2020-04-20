@@ -1,5 +1,6 @@
 import * as actions from './actionTypes';
-import axios from '../../axios-instance';
+import axios from 'axios';
+
 
 // fetch just the selected diary
 export const fetchDiaryInit = () =>{
@@ -13,7 +14,6 @@ export const fetchDiarySuccess = (data, diary) =>{
     return{
         type: actions.FETCH_DIARY_SUCCESS,
         title: data.title,
-        pages: data.pages,
         today: today,
         currentDiary: diary
     }
@@ -35,17 +35,47 @@ export const checkIfToday = () =>{
 export const fetchDiary = (id) =>{
     return dispatch=>{
         dispatch(fetchDiaryInit());
-        axios.get('/diaries/' + id + '.json')
+        axios.get('/api/diaries/'+id)
             .then(response=>{
                 if(response.config.url === '/diaries/.json'){
                     dispatch(fetchDiaryFail('404'));
                     return false;
                 }
                 dispatch(fetchDiarySuccess(response.data, id));
-                dispatch(checkIfTodayHasAnEntry(response.data));
+                dispatch(getPages(id));
+                // dispatch(checkIfTodayHasAnEntry(response.data));
             })
             .catch(error => {
                 dispatch(fetchDiaryFail(error))
+            })
+    }
+}
+
+// get all the pages from a given diary
+
+export const getPagesSuccess = (pages)=>{
+    return{
+        type: actions.GET_PAGES_SUCCESS,
+        pages: pages
+    }
+}
+
+export const getPagesFail = (error) =>{
+    return{
+        type: actions.GET_PAGES_FAIL,
+        error: error
+    }
+}
+
+export const getPages = (diary)=>{
+    return dispatch=>{
+        axios.get('/api/diaries/'+ diary +'/pages/')
+            .then(res=>{
+                dispatch(getPagesSuccess(res.data))
+                dispatch(checkIfTodayHasAnEntry(res.data));
+            })
+            .catch(err=>{
+                dispatch(getPagesFail(err))
             })
     }
 }
@@ -74,10 +104,10 @@ export const todayhasNoEntry = () =>{
     }
 }
 
-export const checkIfTodayHasAnEntry = (diary) =>{
+export const checkIfTodayHasAnEntry = (pages) =>{
     return dispatch=> {
         const today = getTodayDate();
-        const getTodayPage = Object.entries(diary.pages).filter(page=> page[1].date === today);
+        const getTodayPage = Object.entries(pages).filter(page=> page[1].date === today);
         if(getTodayPage.length > 0){
             return dispatch(todayHasAnEntry(getTodayPage))
         }else{
@@ -117,7 +147,7 @@ export const postDailyDiaryFail = (error) =>{
 export const postDailyDiary = (data, currentDiary) =>{
     return dispatch=>{
         dispatch(postDailyDiaryInit())
-        axios.post('/diaries/' + currentDiary + '/pages.json', data)
+        axios.post('/api/diaries/'+currentDiary+'/pages', data)
           .then(response=>{
               dispatch(postDailyDiarySuccess())
           })
@@ -206,7 +236,6 @@ export const checkIfNext = (pages, currentDate)=>{
             dateOfNextPage.push(new Date(getDateOfNextPage).getDate());
             dateOfNextPage = dateOfNextPage.join("-");
         let next = Object.entries(pages).filter(page=>(page[1].date === dateOfNextPage))
-        console.log('[checkIfNext]', next)
         if(next.length !== 0){
             dispatch(nextPageSuccess());
         }else{
@@ -294,9 +323,11 @@ export const prevPage = (pages, currentDate) =>{
      }
  }
 
- export const submitEditSuccess = () =>{
+ export const submitEditSuccess = (data) =>{
      return{
-        type: actions.SUBMIT_EDIT_SUCCESS
+        type: actions.SUBMIT_EDIT_SUCCESS,
+        body: data.body,
+        date: data.date
      }
  }
 
@@ -308,12 +339,12 @@ export const prevPage = (pages, currentDate) =>{
 
  export const submitEdit = (data, diary, page) =>{
      return dispatch=>{
-         dispatch(submitEditInit())
-        const post = {...data};
-        axios.put('/diaries/' + diary + '/pages/' + page + '.json', post)
+        dispatch(submitEditInit())
+        const date = data.date
+        const newData = {...data, id: page}
+        axios.put('/api/diaries/'+ diary +'/pages/' + date, newData)
             .then(res => {
-                console.log(res)
-                dispatch(submitEditSuccess())
+                dispatch(submitEditSuccess(newData))
             })
             .catch(err=>{
                 dispatch(submitEditFail(err))

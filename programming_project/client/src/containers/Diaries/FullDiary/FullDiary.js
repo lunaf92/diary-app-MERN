@@ -43,7 +43,6 @@ class FullDiary extends Component {
   }
 
   onEditEntryHandler = () =>{
-    console.log('Edit Entry')
     this.props.onEditEntry()
   }
 
@@ -53,7 +52,7 @@ class FullDiary extends Component {
       date: this.props.currentDate
     }
     const diary = this.props.currentDiary;
-    const page = this.props.currentPage[0][0];
+    const page = this.props.currentPage[0][1]._id;
     this.props.onSubmitEdit(data, diary, page);
   }
 
@@ -62,7 +61,6 @@ class FullDiary extends Component {
   }
 
   onBackHandler = () =>{
-    console.log('onBackHandler')
     this.props.onPrevPage(this.props.pages, this.props.currentDate)
   }
 

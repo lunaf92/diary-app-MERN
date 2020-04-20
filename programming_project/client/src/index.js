@@ -12,15 +12,13 @@ import diariesReducer from './store/reducers/diaries';
 import newDiaryReducer from './store/reducers/newDiary';
 import fullDiaryReducer from './store/reducers/fullDiary';
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-
 const masterReducer = combineReducers({
     diaries: diariesReducer,
     newDiary: newDiaryReducer,
     fullDiary: fullDiaryReducer
 })
 
-const store = createStore(masterReducer, composeEnhancers(applyMiddleware(thunk)))
+const store = createStore(masterReducer, compose(applyMiddleware(thunk)))
 
 const app = (
     <Provider store={store}>

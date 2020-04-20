@@ -29,7 +29,7 @@ class Diaries extends Component{
         if(this.props.loading){
             diaries = <Spinner/>
         }
-        if(!this.props.diaries){
+        if(this.props.diaries &&  this.props.diaries.length === 0){
             diaries = <p>looks like you're the first one! start a diary now!</p>
         }
         if(this.props.error){
@@ -37,7 +37,7 @@ class Diaries extends Component{
         }
         if(this.props.diaries){
             diaries = this.props.diaries.map((diary, index)=>{
-                let diaryKey = diary[0];
+                let diaryKey = diary[1]._id;
                 let singleDiary = diary[1];
                 return(
                     <div key={index} className={classes.SingleDiary}>

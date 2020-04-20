@@ -1,5 +1,5 @@
 import * as actions from './actionTypes';
-import axios from '../../axios-instance';
+import axios from 'axios';
 
 export const fetchDiariesSuccess = (diaries) =>{
     return{
@@ -24,7 +24,7 @@ export const fetchDiariesInit = () =>{
 export const fetchDiaries = () =>{
     return dispatch => {
         dispatch(fetchDiariesInit())
-        axios.get('/diaries.json')
+        axios.get('/api/diaries')
             .then(response=>{
                 let newData = Object.entries(response.data);
                 let updatedDiaries = []
@@ -60,9 +60,10 @@ export const deleteDiaryFail = (error) =>{
 
 export const deleteDiary = (id) =>{
     return dispatch => {
-        axios.delete('/diaries/'+ id + '.json')
-                .then(response=>{
+        axios.delete('/api/diaries/'+ id)
+                .then(()=>{
                     dispatch(deleteDiarySuccess())
+                    dispatch(deleteAllPages(id))
                     dispatch(fetchDiaries())
                 })
                 .catch(err=>{
@@ -70,6 +71,30 @@ export const deleteDiary = (id) =>{
                 })
     }
 };
+
+export const deleteAllPagesSuccess = () =>{
+    return{
+        type: actions.DELETE_ALL_PAGES_SUCCESS
+    }
+}
+
+export const deleteAllPagesFail = (err) =>{
+    return{
+        type: actions.DELETE_ALL_PAGES_FAIL,
+        errror: err
+    }
+}
+
+export const deleteAllPages = (diary) =>{
+    return dispatch=>{
+        axios.delete('/api/diaries/'+diary+'/pages')
+        .then(()=>{
+            dispatch(deleteAllPagesSuccess())
+        })
+        .catch(err=>dispatch(deleteAllPagesFail(err)))
+    }
+    
+}
 
 export const storeEntry = (id) =>{
     return{

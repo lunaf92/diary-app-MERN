@@ -23,7 +23,7 @@ const reducer = (state = initialState, action) =>{
         case actions.FETCH_DIARY_INIT:
             return updateObject(state, {loading: true, error: null, currentBody: '', previous: true, todayHasAnEntry: false});
         case actions.FETCH_DIARY_SUCCESS:
-            return updateObject(state, {loading: false, title: action.title, pages: action.pages, today:action.today, currentDate: action.today, currentDiary: action.currentDiary});
+            return updateObject(state, {loading: false, title: action.title, today:action.today, currentDate: action.today, currentDiary: action.currentDiary});
         case actions.FETCH_DIARY_FAIL:
             return updateObject(state, {loading: false, error: action.error});
         case actions.TODAY_HAS_AN_ENTRY:
@@ -57,9 +57,13 @@ const reducer = (state = initialState, action) =>{
         case actions.SUBMIT_EDIT_INIT:
             return updateObject(state, {loading: true});
         case actions.SUBMIT_EDIT_SUCCESS:
-            return updateObject(state, {loading: false, editing: false});
+            return updateObject(state, {loading: false, editing: false, currentBody: action.body, currentDate: action.date});
         case actions.SUBMIT_EDIT_FAIL:
             return updateObject(state, {loading: false, error: action.error, editing: false});
+        case actions.GET_PAGES_SUCCESS:
+            return updateObject(state, { pages: action.pages });
+        case actions.GET_PAGES_FAIL:
+            return updateObject(state, {error: action.error})
         default:
             return state;
     }

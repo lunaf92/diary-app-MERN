@@ -1,5 +1,5 @@
 import * as actions from './actionTypes';
-import axios from '../../axios-instance';
+import axios from 'axios';
 
 export const newTitle = (title) =>{
     return{
@@ -45,7 +45,7 @@ export const postData = (data) =>{
     return dispatch=>{
         dispatch(postDataInit());
         let post = { ...data }
-        axios.post('/diaries.json', post)
+        axios.post('/api/diaries', post)
                 .then(response=>{
                     alert('diary saved!')
                     dispatch(postDataSuccess())
